@@ -1,25 +1,25 @@
+require("dotenv").config();
 const express = require("express");
-const { readFile } = require("fs").promises;
-
 const cors = require("cors");
-const corsOption = {
-  origin: ["http://localhost:5173", "https://yourdomain.com"],
-};
+const cookieParser = require("cookie-parser"); // Change this line
+
+const authRoutes = require("./routes/auth");
+const dataRoutes = require("./routes/data");
 
 const app = express();
-app.use(cors(corsOption));
+
+app.use(cookieParser());
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "https://yourdomain.com"],
+    credentials: true,
+  }),
+);
 app.use(express.json());
 
-app.post("/add", async (request, response) => {
-  const { num1, num2 } = request.body;
-  const n1 = parseFloat(num1);
-  const n2 = parseFloat(num2);
+// Routes
+app.use("/auth", authRoutes);
+app.use("/data", dataRoutes);
 
-  if (isNaN(n1) || isNaN(n2)) {
-    return response.status(400).json({ error: "Invalid numbers" });
-  }
-
-  response.json({ result: n1 + n2 });
-});
-
-app.listen(process.env.PORT || 3000, () => console.log("Server is running..."));
+const port = process.env.PORT || 3000;
+app.listen(port, () => console.log(`Server running on port ${port}`));
