@@ -1,6 +1,14 @@
 import { Link } from "react-router-dom";
+import { useAuth } from "../AuthContext";
 
 function Home() {
+  const { user, loading } = useAuth();
+
+  // Don't show content while loading or if logged in
+  if (loading || user) {
+    return <></>;
+  }
+
   return (
     <div>
       <h1 className="text-2xl font-semibold text-slate-900 text-center">

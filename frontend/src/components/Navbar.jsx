@@ -5,9 +5,13 @@ function Navbar() {
   const { user, loading } = useAuth();
 
   return (
-    <div className="flex justify-between items-center bg-white text-black p-4 shadow-md">
+    <div className="flex justify-between items-center bg-white/80 backdrop-blur-md text-black p-4 shadow-lg border border-white/20">
       <Link to="/" className="px-4 py-2">
-        makeapost
+        <img
+          src="/logo-bw.png"
+          alt="Make A Post"
+          className="h-8 w-auto object-contain flex-shrink-0"
+        />
       </Link>
 
       <div className="flex gap-4">

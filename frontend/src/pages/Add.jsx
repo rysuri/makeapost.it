@@ -1,26 +1,103 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../AuthContext";
+import { useBoard } from "../BoardContext";
 import { useNavigate } from "react-router-dom";
+import PostIt from "../components/PostIt";
 
 function Add() {
   const [inputValue, setInputValue] = useState("");
+  const [size, setSize] = useState("S");
+  const [color, setColor] = useState("Y");
   const [expiration, setExpiration] = useState("7 days");
+  const [isPlacing, setIsPlacing] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [boardPos, setBoardPos] = useState({ x: 0, y: 0 });
+
   const { user, loading } = useAuth();
+  const { screenToBoard, zoom, triggerRefresh, setIsBoardInteractive } =
+    useBoard();
   const navigate = useNavigate();
 
-  async function handlePost() {
+  // Set board to non-interactive on mount, restore on unmount
+  useEffect(() => {
+    setIsBoardInteractive(false);
+    return () => {
+      setIsBoardInteractive(true);
+    };
+  }, [setIsBoardInteractive]);
+
+  // Track mouse position when in placement mode
+  useEffect(() => {
+    if (!isPlacing) return;
+
+    const handleMouseMove = (e) => {
+      setMousePos({ x: e.clientX, y: e.clientY });
+      const pos = screenToBoard(e.clientX, e.clientY);
+      setBoardPos(pos);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [isPlacing, screenToBoard]);
+
+  // Handle click to place post-it
+  useEffect(() => {
+    if (!isPlacing) return;
+
+    // Small delay to prevent the button click from triggering placement
+    const timer = setTimeout(() => {
+      const handleClick = async (e) => {
+        e.preventDefault();
+        await handlePost(boardPos.x, boardPos.y);
+      };
+
+      const handleEscape = (e) => {
+        if (e.key === "Escape") {
+          setIsPlacing(false);
+          setIsBoardInteractive(false);
+        }
+      };
+
+      window.addEventListener("click", handleClick);
+      window.addEventListener("keydown", handleEscape);
+
+      // Store cleanup function
+      window._placementCleanup = () => {
+        window.removeEventListener("click", handleClick);
+        window.removeEventListener("keydown", handleEscape);
+      };
+    }, 100); // 100ms delay
+
+    return () => {
+      clearTimeout(timer);
+      if (window._placementCleanup) {
+        window._placementCleanup();
+        delete window._placementCleanup;
+      }
+    };
+  }, [isPlacing, boardPos]);
+
+  function startPlacement(e) {
     if (!inputValue.trim()) {
       alert("Please enter some text");
       return;
     }
+    e.stopPropagation();
+    setIsPlacing(true);
+    setIsBoardInteractive(true); // Make board interactive during placement
+  }
 
+  async function handlePost(x, y) {
     try {
       const { data } = await axios.post(
         "http://localhost:3000/data/post",
         {
           message: inputValue,
-          size: "S",
+          size: size,
+          position_x: x,
+          position_y: y,
+          color: color,
           expiration: expiration,
         },
         { withCredentials: true },
@@ -28,10 +105,18 @@ function Add() {
 
       console.log("Post created:", data);
       setInputValue("");
+      setIsPlacing(false);
+      setIsBoardInteractive(false); // Block board again after placement
+
+      triggerRefresh();
+
       alert("Post created successfully!");
+      navigate("/");
     } catch (error) {
       console.error("Post error:", error.response?.data || error.message);
       alert("Failed to create post");
+      setIsPlacing(false);
+      setIsBoardInteractive(false); // Block board again on error
     }
   }
 
@@ -45,43 +130,129 @@ function Add() {
   }
 
   return (
-    <div className="p-6 max-w-md mx-auto bg-white shadow-lg rounded-2xl space-y-4">
-      <div className="max-w-md mx-auto">
-        <h1 className="text-3xl font-bold text-slate-900 mb-8 text-center">
-          Make a Post
-        </h1>
+    <>
+      {/* CSS for heartbeat animation */}
+      <style>{`
+        @keyframes heartbeat {
+          0%, 100% {
+            opacity: 0.4;
+          }
+          50% {
+            opacity: 0.7;
+          }
+        }
+      `}</style>
 
-        <div className="space-y-4">
-          <input
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Enter text"
-            className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500"
+      {/* Placement mode preview */}
+      {isPlacing && (
+        <div
+          className="fixed pointer-events-none z-50"
+          style={{
+            left: `${mousePos.x}px`,
+            top: `${mousePos.y}px`,
+            transform: `translate(-50%, -50%) scale(${zoom})`,
+            animation: "heartbeat 1.5s ease-in-out infinite",
+          }}
+        >
+          <PostIt
+            message={inputValue}
+            size={size}
+            color={color}
+            createdAt={new Date().toISOString()}
+            expiresAt={new Date().toISOString()}
           />
-
-          <select
-            value={expiration}
-            onChange={(e) => setExpiration(e.target.value)}
-            className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 bg-white"
+          <div
+            className="absolute left-1/2 -translate-x-1/2 bg-black text-white px-3 py-1 rounded text-sm whitespace-nowrap"
+            style={{
+              bottom: `${-32 / zoom}px`,
+              transform: `translateX(-50%) scale(${1 / zoom})`,
+              transformOrigin: "top center",
+            }}
           >
-            <option value="1 hour">1 hour</option>
-            <option value="7 days">7 days</option>
-            <option value="1 year">1 year</option>
-          </select>
-
-          <button
-            onClick={handlePost}
-            className="w-full px-4 py-2 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition-colors font-medium"
-          >
-            Post
-          </button>
+            Click to place • ESC to cancel
+          </div>
         </div>
+      )}
 
-        <p className="mt-4 text-sm text-slate-600 text-center">
-          Posting as: {user.name}
-        </p>
-      </div>
-    </div>
+      {/* Form - hidden during placement */}
+      {!isPlacing && (
+        <div className="p-6 max-w-md mx-auto bg-white shadow-lg rounded-2xl space-y-4">
+          <div className="max-w-md mx-auto">
+            <h1 className="text-3xl font-bold text-slate-900 mb-8 text-center">
+              Make a Post
+            </h1>
+
+            <div className="space-y-4">
+              <textarea
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                placeholder="Enter text"
+                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 resize-none"
+                rows={4}
+              />
+
+              <div className="flex gap-4">
+                <div className="flex-1">
+                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                    Size
+                  </label>
+                  <select
+                    value={size}
+                    onChange={(e) => setSize(e.target.value)}
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 bg-white"
+                  >
+                    <option value="S">Small</option>
+                    <option value="M">Medium</option>
+                    <option value="L">Large</option>
+                  </select>
+                </div>
+
+                <div className="flex-1">
+                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                    Color
+                  </label>
+                  <select
+                    value={color}
+                    onChange={(e) => setColor(e.target.value)}
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 bg-white"
+                  >
+                    <option value="Y">Yellow</option>
+                    <option value="P">Pink</option>
+                    <option value="B">Blue</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Expiration
+                </label>
+                <select
+                  value={expiration}
+                  onChange={(e) => setExpiration(e.target.value)}
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 bg-white"
+                >
+                  <option value="1 hour">1 hour</option>
+                  <option value="7 days">7 days</option>
+                  <option value="1 year">1 year</option>
+                </select>
+              </div>
+
+              <button
+                onClick={startPlacement}
+                className="w-full px-4 py-2 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition-colors font-medium"
+              >
+                Place on Board
+              </button>
+            </div>
+
+            <p className="mt-4 text-sm text-slate-600 text-center">
+              Posting as: {user.name}
+            </p>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 

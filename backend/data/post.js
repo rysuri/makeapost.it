@@ -33,7 +33,8 @@ const createPost = async (req, res) => {
     const userId = userResult.rows[0].id;
 
     // get post data from request
-    const { message, size, expiration } = req.body;
+    const { message, size, expiration, color, position_x, position_y } =
+      req.body;
 
     // validate message
     if (!message || !message.trim()) {
@@ -43,17 +44,29 @@ const createPost = async (req, res) => {
       });
     }
 
+    // Validate and sanitize expiration
+    const validExpirations = {
+      "1day": "1 day",
+      "7days": "7 days",
+      "30days": "30 days",
+    };
+    const intervalValue = validExpirations[expiration] || "7 days";
+
     // insert post into database
     const query = `
-      INSERT INTO posts (author, message, size, exp) 
-      VALUES ($1, $2, $3, NOW() + INTERVAL '${expiration || "7 days"}') 
+      INSERT INTO posts (author, message, size, exp, color, position_x, position_y) 
+      VALUES ($1, $2, $3, NOW() + $4::INTERVAL, $5, $6, $7) 
       RETURNING *
     `;
 
     const result = await dbClient.query(query, [
-      userId, // UUID not the google_id...
+      userId,
       message.trim(),
       size || "S",
+      intervalValue,
+      color || "Y",
+      position_x || 0,
+      position_y || 0,
     ]);
 
     const post = result.rows[0];
