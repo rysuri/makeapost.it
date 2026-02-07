@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useAuth } from "../AuthContext"; // adjust path
+import { useAuth } from "../AuthContext";
 
 function Navbar() {
   const { user, loading } = useAuth();

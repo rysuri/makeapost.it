@@ -1,71 +1,86 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import axios from "axios";
+import { useAuth } from "../AuthContext";
+import { useNavigate } from "react-router-dom";
 
 function Add() {
-  const [num1, setNum1] = useState("");
-  const [num2, setNum2] = useState("");
-  const [result, setResult] = useState("");
+  const [inputValue, setInputValue] = useState("");
+  const [expiration, setExpiration] = useState("7 days");
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
 
-  const handleAdd = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/postData", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: num1, id: num2 }),
-      });
-      const data = await response.json();
-
-      if (!response.ok) {
-        setResult(data.error);
-        return;
-      }
-
-      setResult(data.result);
-    } catch (error) {
-      setResult("Error connecting to server");
+  async function handlePost() {
+    if (!inputValue.trim()) {
+      alert("Please enter some text");
+      return;
     }
-  };
-  const handleFetch = async () => {
+
     try {
-      const response = await fetch("http://localhost:3000/fetchData", {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
-      const data = await response.json();
+      const { data } = await axios.post(
+        "http://localhost:3000/data/post",
+        {
+          message: inputValue,
+          size: "S",
+          expiration: expiration,
+        },
+        { withCredentials: true },
+      );
 
-      if (!response.ok) {
-        setResult(data.error);
-        return;
-      }
-
-      setResult(JSON.stringify(data.data, null, 2));
+      console.log("Post created:", data);
+      setInputValue("");
+      alert("Post created successfully!");
     } catch (error) {
-      setResult("Error connecting to server");
+      console.error("Post error:", error.response?.data || error.message);
+      alert("Failed to create post");
     }
-  };
+  }
+
+  if (loading) {
+    return <div className="p-8 text-center">Loading...</div>;
+  }
+
+  if (!user) {
+    navigate("/");
+    return <div className="p-8 text-center">Redirecting to login...</div>;
+  }
 
   return (
-    <div>
-      <Link to="/">Home Page</Link>
-      <h1>Add Page</h1>
+    <div className="p-6 max-w-md mx-auto bg-white shadow-lg rounded-2xl space-y-4">
+      <div className="max-w-md mx-auto">
+        <h1 className="text-3xl font-bold text-slate-900 mb-8 text-center">
+          Make a Post
+        </h1>
 
-      <input
-        value={num1}
-        onChange={(e) => setNum1(e.target.value)}
-        placeholder="Enter number to add"
-      />
-      <input
-        value={num2}
-        onChange={(e) => setNum2(e.target.value)}
-        placeholder="Enter number to add"
-      />
+        <div className="space-y-4">
+          <input
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            placeholder="Enter text"
+            className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500"
+          />
 
-      <br />
+          <select
+            value={expiration}
+            onChange={(e) => setExpiration(e.target.value)}
+            className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 bg-white"
+          >
+            <option value="1 hour">1 hour</option>
+            <option value="7 days">7 days</option>
+            <option value="1 year">1 year</option>
+          </select>
 
-      <button onClick={handleAdd}>Add</button>
-      <button onClick={handleFetch}>Fetch</button>
+          <button
+            onClick={handlePost}
+            className="w-full px-4 py-2 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition-colors font-medium"
+          >
+            Post
+          </button>
+        </div>
 
-      {result && <h2>Result: {result}</h2>}
+        <p className="mt-4 text-sm text-slate-600 text-center">
+          Posting as: {user.name}
+        </p>
+      </div>
     </div>
   );
 }

@@ -3,10 +3,8 @@ function Operations() {
   return (
     <>
       <div>
-        <Link to="/">Home Page</Link>
         <h1>Operations Page</h1>
-
-        <Link to="/operations/add">Add Page</Link>
+        <Link to="/operations/add">Make a post</Link>
       </div>
     </>
   );

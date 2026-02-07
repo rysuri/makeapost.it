@@ -10,10 +10,8 @@ export const verify = async (req, res) => {
     if (!token) {
       return res.status(401).json({ authenticated: false });
     }
-
     // verify token
     const decoded = jwt.verify(token, JWT_SECRET);
-
     const userId = decoded.sub;
 
     // query DB for latest user info
@@ -30,7 +28,6 @@ export const verify = async (req, res) => {
     }
 
     const user = result.rows[0];
-
     return res.status(200).json({
       authenticated: true,
       user: {
