@@ -7,9 +7,7 @@ function Operations() {
         to="/operations/add"
         className="w-48 h-48 bg-white rounded-lg shadow-md flex items-center justify-center hover:shadow-lg transition-shadow"
       >
-        <span className="text-lg font-semibold text-slate-900">
-          Make a post
-        </span>
+        <span className="text-lg font-semibold text-slate-900">See posts</span>
       </Link>
 
       <Link
