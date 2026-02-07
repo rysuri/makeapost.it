@@ -1,8 +1,7 @@
-// App.jsx
 import "./App.css";
 
 import { Routes, Route } from "react-router-dom";
-import { BoardProvider } from "./BoardContext"; // Named import with {}
+import { BoardProvider } from "./BoardContext";
 import NavBar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
 import Board from "./components/Board.jsx";

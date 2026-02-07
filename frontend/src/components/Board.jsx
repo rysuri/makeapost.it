@@ -1,4 +1,3 @@
-// Board.jsx
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
@@ -26,7 +25,6 @@ function Board() {
     isBoardInteractive,
   } = useBoard();
 
-  // Routes where board should be blurred and non-interactive
   const blockedRoutes = ["/dashboard", "/operations", "/login"];
   const isBlocked =
     blockedRoutes.includes(location.pathname) || !isBoardInteractive;
