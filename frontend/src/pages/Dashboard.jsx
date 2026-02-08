@@ -1,5 +1,6 @@
 import { useAuth } from "../AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 export default function Dashboard() {
   const { user, loading, logout } = useAuth();
@@ -10,42 +11,123 @@ export default function Dashboard() {
     navigate("/");
   }
 
+  useEffect(() => {
+    document.title = "Dashboard · makeapost";
+  }, []);
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="w-full flex items-center justify-center">
+        <p className="text-2xl text-gray-600">Loading...</p>
+      </div>
+    );
   }
+
   if (!user) {
     navigate("/");
-    return <div>Not authenticated</div>;
+    return (
+      <div className="w-full flex items-center justify-center">
+        <p className="text-2xl text-gray-600">Not Authenticated...</p>
+      </div>
+    );
   }
 
   return (
-    <div className="p-6 max-w-md mx-auto bg-white shadow-lg rounded-2xl space-y-4">
-      <h1 className="text-2xl font-bold">Welcome {user.name}</h1>
+    <div className="w-full flex items-center justify-center p-6">
+      <div className="bg-white p-8 rounded-lg shadow-xl max-w-lg w-full animate-[slideUp_0.4s_ease-out]">
+        <div className="space-y-6">
+          <h1 className="text-2xl font-bold text-gray-800 animate-[fadeIn_0.5s_ease-out]">
+            Hey, {user.name}!
+          </h1>
 
-      <img
-        src={user.picture}
-        alt={user.name}
-        className="w-24 h-24 rounded-full"
-      />
+          <div className="flex gap-6 items-start animate-[fadeIn_0.6s_ease-out]">
+            <img
+              src={user.picture}
+              alt={user.name}
+              className="w-24 h-24 rounded-full shadow-md flex-shrink-0"
+            />
 
-      <div className="space-y-1 text-sm">
-        <p>
-          <strong>Email:</strong> {user.email}
-        </p>
-        <p>
-          <strong>Role:</strong> {user.role}
-        </p>
-        <p>
-          <strong>Member since:</strong> {user.created_at}
-        </p>
+            <div className="space-y-2 text-left text-gray-700 flex-1">
+              <p className="text-base">
+                <strong>Email:</strong> {user.email}
+              </p>
+              <p className="text-base">
+                <strong>Role:</strong> {user.role}
+              </p>
+              <p className="text-base">
+                <strong>Member since:</strong> {formatDate(user.created_at)}
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div
+              className="bg-blue-100 p-4 rounded-lg text-center animate-[popIn_0.4s_ease-out]"
+              style={{ animationDelay: "0.2s", animationFillMode: "backwards" }}
+            >
+              <p className="text-3xl font-bold text-gray-800">12</p>
+              <p className="text-sm text-gray-600 mt-1">Posts made</p>
+            </div>
+            <div
+              className="bg-yellow-100 p-4 rounded-lg text-center animate-[popIn_0.4s_ease-out]"
+              style={{ animationDelay: "0.3s", animationFillMode: "backwards" }}
+            >
+              <p className="text-3xl font-bold text-gray-800">45</p>
+              <p className="text-sm text-gray-600 mt-1">Clicks</p>
+            </div>
+          </div>
+
+          <button
+            onClick={handleLogout}
+            className="w-full bg-yellow-200 hover:bg-yellow-300 text-gray-800 font-semibold py-3 px-6 rounded-sm shadow-lg shadow-yellow-300/50 hover:shadow-xl transition-all duration-200 hover:scale-105 hover:rotate-1 animate-[fadeIn_0.7s_ease-out]"
+            style={{ fontFamily: "'Indie Flower', cursive, sans-serif" }}
+          >
+            Logout
+          </button>
+        </div>
       </div>
 
-      <button
-        onClick={handleLogout}
-        className="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-      >
-        Logout
-      </button>
+      <style>{`
+        @keyframes slideUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+
+        @keyframes popIn {
+          from {
+            opacity: 0;
+            transform: scale(0.8);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+      `}</style>
     </div>
   );
 }

@@ -27,6 +27,9 @@ function Add() {
     };
   }, [setIsBoardInteractive]);
 
+  useEffect(() => {
+    document.title = "Post-it · makeapost";
+  }, []);
   // Track mouse position when in placement mode
   useEffect(() => {
     if (!isPlacing) return;
