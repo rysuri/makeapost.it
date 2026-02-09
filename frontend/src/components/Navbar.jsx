@@ -5,7 +5,7 @@ function Navbar() {
   const { user, loading } = useAuth();
 
   return (
-    <div className="flex justify-between items-center bg-white/80 backdrop-blur-md text-black p-4 shadow-lg border border-white/20">
+    <div className="flex justify-between items-center bg-white/80 backdrop-blur-md text-black p-3 shadow-lg border border-white/20">
       <Link to="/" className="px-4 py-2">
         <img
           src="/logo-bw.png"

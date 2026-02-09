@@ -253,6 +253,8 @@ function Board() {
                 >
                   <PostIt
                     message={post.message}
+                    drawing={post.drawing}
+                    link={post.link}
                     size={post.size}
                     color={post.color}
                     createdAt={post.iat}

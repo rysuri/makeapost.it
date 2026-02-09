@@ -7,6 +7,7 @@ import PostIt from "../components/PostIt";
 
 function Add() {
   const [inputValue, setInputValue] = useState("");
+  const [link, setLink] = useState("");
   const [size, setSize] = useState("S");
   const [color, setColor] = useState("Y");
   const [expiration, setExpiration] = useState("7 days");
@@ -97,6 +98,7 @@ function Add() {
         "http://localhost:3000/data/post",
         {
           message: inputValue,
+          link: link || null,
           size: size,
           position_x: x,
           position_y: y,
@@ -108,12 +110,11 @@ function Add() {
 
       console.log("Post created:", data);
       setInputValue("");
+      setLink("");
       setIsPlacing(false);
       setIsBoardInteractive(false); // Block board again after placement
 
       triggerRefresh();
-
-      alert("Post created successfully!");
       navigate("/");
     } catch (error) {
       console.error("Post error:", error.response?.data || error.message);
@@ -159,6 +160,7 @@ function Add() {
         >
           <PostIt
             message={inputValue}
+            link={link || null}
             size={size}
             color={color}
             createdAt={new Date().toISOString()}
@@ -179,28 +181,18 @@ function Add() {
 
       {/* Form with preview - hidden during placement */}
       {!isPlacing && (
-        <div className="p-6 max-w-4xl mx-auto">
+        <div className="p-6 max-w-3xl mx-auto">
           <div className="flex gap-8 items-start">
             {/* Left side - Preview */}
             <div className="flex-shrink-0">
-              <h2 className="text-lg font-semibold text-slate-700 mb-4">
-                Preview
-              </h2>
-              <div className="bg-slate-50 rounded-xl p-8 flex items-center justify-center min-h-[300px]">
-                {inputValue.trim() ? (
-                  <PostIt
-                    message={inputValue}
-                    size={size}
-                    color={color}
-                    createdAt={new Date().toISOString()}
-                    expiresAt={new Date().toISOString()}
-                  />
-                ) : (
-                  <p className="text-slate-400 text-sm">
-                    Start typing to see preview
-                  </p>
-                )}
-              </div>
+              <PostIt
+                message={inputValue}
+                link={link || null}
+                size="L"
+                color={color}
+                createdAt={new Date().toISOString()}
+                expiresAt={new Date().toISOString()}
+              />
             </div>
 
             {/* Right side - Form */}
@@ -248,6 +240,22 @@ function Add() {
                       <option value="B">Blue</option>
                     </select>
                   </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                    Link (optional)
+                  </label>
+                  <input
+                    type="url"
+                    value={link}
+                    onChange={(e) => setLink(e.target.value)}
+                    placeholder="https://example.com"
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500"
+                  />
+                  <p className="mt-1 text-xs text-slate-500">
+                    Add a URL to make your post-it clickable
+                  </p>
                 </div>
 
                 <div>

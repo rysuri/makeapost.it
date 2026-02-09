@@ -3,11 +3,11 @@ const dbClient = require("../config/database");
 const getAllPosts = async (req, res) => {
   try {
     const query = `
-  SELECT author, message, size, iat, exp, position_x, position_y, color
-  FROM posts
-  WHERE exp > NOW()
-  ORDER BY iat ASC
-`;
+      SELECT author, message, drawing, link, size, iat, exp, position_x, position_y, color
+      FROM posts
+      WHERE exp > NOW()
+      ORDER BY iat ASC
+    `;
 
     const result = await dbClient.query(query);
 

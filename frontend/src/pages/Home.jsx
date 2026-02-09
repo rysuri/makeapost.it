@@ -7,17 +7,27 @@ function Home() {
   useEffect(() => {
     document.title = "Home · makeapost";
   }, []);
+
   // Don't show content while loading or if logged in
   if (loading || user) {
     return <></>;
   }
 
   return (
-    <div>
-      <h1
-        className="text-2xl font-semibold text-slate-800 text-center shadow-white animate-[fadeInDown_0.5s_ease-out]"
-        style={{ textShadow: "0 0 10px rgb(255, 255, 255)" }}
-      >
+    <div
+      className="bg-white p-7 relative m-30 transparent 10%"
+      style={{
+        WebkitMaskImage:
+          "linear-gradient(to right, transparent 10%, black 20%, black 80%, transparent 90%)",
+        WebkitMaskRepeat: "no-repeat",
+        WebkitMaskSize: "100% 100%",
+        maskImage:
+          "linear-gradient(to right, transparent 10%, black 20%, black 80%, transparent 90%)",
+        maskRepeat: "no-repeat",
+        maskSize: "100% 100%",
+      }}
+    >
+      <h1 className="text-2xl font-semibold text-slate-800 text-center shadow-white animate-[fadeInDown_0.5s_ease-out]">
         A few words are worth a thousand pictures.
       </h1>
       <div
@@ -31,30 +41,6 @@ function Home() {
           Join the community
         </Link>
       </div>
-
-      <style>{`
-        @keyframes fadeInDown {
-          from {
-            opacity: 0;
-            transform: translateY(-20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
     </div>
   );
 }
