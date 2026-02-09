@@ -177,81 +177,106 @@ function Add() {
         </div>
       )}
 
-      {/* Form - hidden during placement */}
+      {/* Form with preview - hidden during placement */}
       {!isPlacing && (
-        <div className="p-6 max-w-md mx-auto bg-white shadow-lg rounded-2xl space-y-4">
-          <div className="max-w-md mx-auto">
-            <h1 className="text-3xl font-bold text-slate-900 mb-8 text-center">
-              Make a Post
-            </h1>
-
-            <div className="space-y-4">
-              <textarea
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                placeholder="Enter text"
-                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 resize-none"
-                rows={4}
-              />
-
-              <div className="flex gap-4">
-                <div className="flex-1">
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
-                    Size
-                  </label>
-                  <select
-                    value={size}
-                    onChange={(e) => setSize(e.target.value)}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 bg-white"
-                  >
-                    <option value="S">Small</option>
-                    <option value="M">Medium</option>
-                    <option value="L">Large</option>
-                  </select>
-                </div>
-
-                <div className="flex-1">
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
-                    Color
-                  </label>
-                  <select
-                    value={color}
-                    onChange={(e) => setColor(e.target.value)}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 bg-white"
-                  >
-                    <option value="Y">Yellow</option>
-                    <option value="P">Pink</option>
-                    <option value="B">Blue</option>
-                  </select>
-                </div>
+        <div className="p-6 max-w-4xl mx-auto">
+          <div className="flex gap-8 items-start">
+            {/* Left side - Preview */}
+            <div className="flex-shrink-0">
+              <h2 className="text-lg font-semibold text-slate-700 mb-4">
+                Preview
+              </h2>
+              <div className="bg-slate-50 rounded-xl p-8 flex items-center justify-center min-h-[300px]">
+                {inputValue.trim() ? (
+                  <PostIt
+                    message={inputValue}
+                    size={size}
+                    color={color}
+                    createdAt={new Date().toISOString()}
+                    expiresAt={new Date().toISOString()}
+                  />
+                ) : (
+                  <p className="text-slate-400 text-sm">
+                    Start typing to see preview
+                  </p>
+                )}
               </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">
-                  Expiration
-                </label>
-                <select
-                  value={expiration}
-                  onChange={(e) => setExpiration(e.target.value)}
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 bg-white"
-                >
-                  <option value="1 hour">1 hour</option>
-                  <option value="7 days">7 days</option>
-                  <option value="1 year">1 year</option>
-                </select>
-              </div>
-
-              <button
-                onClick={startPlacement}
-                className="w-full px-4 py-2 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition-colors font-medium"
-              >
-                Place on Board
-              </button>
             </div>
 
-            <p className="mt-4 text-sm text-slate-600 text-center">
-              Posting as: {user.name}
-            </p>
+            {/* Right side - Form */}
+            <div className="flex-1 bg-white shadow-lg rounded-2xl p-6 space-y-4">
+              <h1 className="text-3xl font-bold text-slate-900 mb-8 text-center">
+                Make a Post
+              </h1>
+
+              <div className="space-y-4">
+                <textarea
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  placeholder="Enter text"
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 resize-none"
+                  rows={4}
+                />
+
+                <div className="flex gap-4">
+                  <div className="flex-1">
+                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                      Size
+                    </label>
+                    <select
+                      value={size}
+                      onChange={(e) => setSize(e.target.value)}
+                      className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 bg-white"
+                    >
+                      <option value="S">Small</option>
+                      <option value="M">Medium</option>
+                      <option value="L">Large</option>
+                    </select>
+                  </div>
+
+                  <div className="flex-1">
+                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                      Color
+                    </label>
+                    <select
+                      value={color}
+                      onChange={(e) => setColor(e.target.value)}
+                      className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 bg-white"
+                    >
+                      <option value="Y">Yellow</option>
+                      <option value="P">Pink</option>
+                      <option value="B">Blue</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                    Expiration
+                  </label>
+                  <select
+                    value={expiration}
+                    onChange={(e) => setExpiration(e.target.value)}
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 bg-white"
+                  >
+                    <option value="1 hour">1 hour</option>
+                    <option value="7 days">7 days</option>
+                    <option value="1 year">1 year</option>
+                  </select>
+                </div>
+
+                <button
+                  onClick={startPlacement}
+                  className="w-full px-4 py-2 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition-colors font-medium"
+                >
+                  Place on Board
+                </button>
+              </div>
+
+              <p className="mt-4 text-sm text-slate-600 text-center">
+                Posting as: {user.name}
+              </p>
+            </div>
           </div>
         </div>
       )}

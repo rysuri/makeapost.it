@@ -7,10 +7,13 @@ import Footer from "./components/Footer.jsx";
 import Board from "./components/Board.jsx";
 
 import Home from "./pages/Home.jsx";
+
 import Login from "./pages/Login.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
+
 import Operations from "./pages/Operations.jsx";
 import Add from "./pages/Add.jsx";
-import Dashboard from "./pages/Dashboard.jsx";
+import Draw from "./pages/Draw.jsx";
 
 import ErrorBoundary from "./pages/ErrorBoundary.jsx";
 
@@ -37,6 +40,7 @@ function App() {
                   <Route path="/login" element={<Login />} />
                   <Route path="/operations" element={<Operations />} />
                   <Route path="/operations/add" element={<Add />} />
+                  <Route path="/operations/draw" element={<Draw />} />
                   <Route path="/dashboard" element={<Dashboard />} />
 
                   <Route path="*" element={<ErrorBoundary />} />
