@@ -10,6 +10,7 @@ function Board() {
   const [error, setError] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const location = useLocation();
   const boardRef = useRef(null);
@@ -27,7 +28,9 @@ function Board() {
 
   const blockedRoutes = ["/dashboard", "/operations", "/login"];
   const isBlocked =
-    blockedRoutes.includes(location.pathname) || !isBoardInteractive;
+    blockedRoutes.includes(location.pathname) ||
+    !isBoardInteractive ||
+    isModalOpen;
 
   useEffect(() => {
     fetchPosts();
@@ -197,7 +200,11 @@ function Board() {
           opacity: isBlocked ? 0 : 1,
         }}
       >
-        <h2 className="text-lg font-bold text-gray-800">Post-It Board</h2>
+        <img
+          src="/logo-simple-bw.png"
+          alt="Make A Post"
+          className="h-4 w-auto object-contain flex-shrink-0 mb-1"
+        />
         <p className="text-sm text-gray-600">Scroll to zoom • Drag to pan</p>
         <p className="text-sm text-gray-600">Posts: {posts.length}</p>
       </div>
@@ -259,6 +266,8 @@ function Board() {
                     color={post.color}
                     createdAt={post.iat}
                     expiresAt={post.exp}
+                    onModalOpen={() => setIsModalOpen(true)}
+                    onModalClose={() => setIsModalOpen(false)}
                   />
                 </div>
               );
