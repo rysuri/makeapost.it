@@ -1,11 +1,11 @@
 const { Client } = require("pg");
 
 const dbClient = new Client({
-  host: "localhost",
-  user: "postgres",
-  port: 5432,
-  password: process.env.DB_PASSWORD,
-  database: "demopost",
+  connectionString: process.env.DATABASE_URL,
+  ssl:
+    process.env.NODE_ENV === "production"
+      ? { rejectUnauthorized: false }
+      : false,
 });
 
 dbClient
