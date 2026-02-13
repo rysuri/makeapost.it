@@ -1,13 +1,14 @@
-import dbClient from "../config/database.js";
-import jwt from "jsonwebtoken";
-
-const JWT_SECRET = process.env.JWT_SECRET;
-
 export const verify = async (req, res) => {
   try {
+    console.log("=== VERIFY REQUEST ===");
+    console.log("Origin:", req.headers.origin);
+    console.log("All cookies:", req.cookies);
+    console.log("Session cookie:", req.cookies.session);
+
     const token = req.cookies.session;
 
     if (!token) {
+      console.log("❌ No session cookie found");
       return res.status(401).json({ authenticated: false });
     }
 
@@ -27,6 +28,8 @@ export const verify = async (req, res) => {
     }
 
     const user = result.rows[0];
+
+    console.log("✅ User verified:", user.email);
 
     return res.status(200).json({
       authenticated: true,

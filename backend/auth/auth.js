@@ -81,7 +81,10 @@ export const googleAuth = async (req, res) => {
 
     console.log("Setting cookie with options:", cookieOptions);
 
-    res.cookie("session", token, cookieOptions);
+    res.setHeader(
+      "Set-Cookie",
+      `session=${token}; HttpOnly; Secure; SameSite=None; Max-Age=259200; Path=/; Partitioned`,
+    );
 
     console.log("✅ Cookie set successfully");
 
