@@ -2,12 +2,10 @@ function Footer() {
   return (
     <div className="bg-white text-black p-4 shadow-md">
       <div className="w-full mx-auto px-4 flex items-center justify-between">
-        {/* Left side */}
         <p>
           <strong>rysuri</strong> powered 2026
         </p>
 
-        {/* Right side */}
         <div className="flex items-center space-x-3">
           <a
             href="https://x.com/intent/post?url=https%3A%2F%2Fmakeapost.it%2F"

@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import PostIt from "../components/PostIt";
 import simplify from "simplify-js";
 
-// Component to render drawing from paths data
 function Draw() {
   const [size, setSize] = useState("S");
   const [color, setColor] = useState("Y");
@@ -28,7 +27,6 @@ function Draw() {
     useBoard();
   const navigate = useNavigate();
 
-  // Set board to non-interactive on mount, restore on unmount
   useEffect(() => {
     setIsBoardInteractive(false);
     return () => {
@@ -40,7 +38,6 @@ function Draw() {
     document.title = "Draw · makeapost";
   }, []);
 
-  // Track mouse position when in placement mode
   useEffect(() => {
     if (!isPlacing) return;
 
@@ -54,7 +51,6 @@ function Draw() {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [isPlacing, screenToBoard]);
 
-  // Handle click to place post-it
   useEffect(() => {
     if (!isPlacing) return;
 
@@ -80,7 +76,7 @@ function Draw() {
         window.removeEventListener("click", handleClick);
         window.removeEventListener("keydown", handleEscape);
       };
-    }, 100); // 100ms delay
+    }, 0); // 100ms delay
 
     return () => {
       clearTimeout(timer);
@@ -91,7 +87,6 @@ function Draw() {
     };
   }, [isPlacing, boardPos]);
 
-  // Get canvas coordinates from mouse event
   const getCanvasCoordinates = (e) => {
     const canvas = canvasRef.current;
     if (!canvas) return { x: 0, y: 0 };
@@ -127,7 +122,6 @@ function Draw() {
     setIsDrawing(false);
   };
 
-  // Draw on canvas
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -135,7 +129,6 @@ function Draw() {
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw all completed paths
     paths.forEach((path) => {
       if (path.points.length < 2) return;
 
@@ -154,7 +147,6 @@ function Draw() {
       ctx.stroke();
     });
 
-    // Draw current path
     if (currentPath.length > 1) {
       ctx.strokeStyle = brushColor;
       ctx.lineWidth = brushSize;
@@ -182,7 +174,6 @@ function Draw() {
   };
 
   const generateDrawingData = () => {
-    // Simplify paths with tolerance of 1.0
     const simplifiedPaths = paths.map((path) => {
       if (path.points.length < 3) return path;
       const simplified = simplify(path.points, 1.1, true);
@@ -208,11 +199,10 @@ function Draw() {
 
     e.stopPropagation();
 
-    // Generate the simplified drawing data
     const data = generateDrawingData();
     setDrawingData(data);
     setIsPlacing(true);
-    setIsBoardInteractive(true); // Make board interactive during placement
+    setIsBoardInteractive(true);
   }
 
   async function handlePost(x, y) {
@@ -237,7 +227,7 @@ function Draw() {
       setDrawingData(null);
       setLink("");
       setIsPlacing(false);
-      setIsBoardInteractive(false); // Block board again after placement
+      setIsBoardInteractive(false);
 
       triggerRefresh();
       navigate("/");
@@ -245,11 +235,10 @@ function Draw() {
       console.error("Post error:", error.response?.data || error.message);
       alert("Failed to create post");
       setIsPlacing(false);
-      setIsBoardInteractive(false); // Block board again on error
+      setIsBoardInteractive(false);
     }
   }
 
-  // Get post-it dimensions based on size (increased for easier drawing)
   const getCanvasSize = () => {
     switch (size) {
       case "S":
@@ -263,7 +252,6 @@ function Draw() {
     }
   };
 
-  // Get post-it background color
   const getPostItColor = () => {
     switch (color) {
       case "Y":
@@ -290,7 +278,6 @@ function Draw() {
 
   return (
     <>
-      {/* CSS for heartbeat animation */}
       <style>{`
         @keyframes heartbeat {
           0%, 100% {
@@ -301,8 +288,6 @@ function Draw() {
           }
         }
       `}</style>
-
-      {/* Placement mode preview */}
       {isPlacing && drawingData && (
         <div
           className="fixed pointer-events-none z-50"
@@ -334,14 +319,12 @@ function Draw() {
         </div>
       )}
 
-      {/* Drawing interface - hidden during placement */}
       {!isPlacing && (
         <div className="max-w-5xl mx-auto">
           <div className="flex gap-8 items-start">
-            {/* Left side - Drawing Canvas */}
             <div className="flex-shrink-0">
               <div
-                className="rounded-xl shadow-lg overflow-hidden relative"
+                className="rounded-lg shadow-lg overflow-hidden relative"
                 style={{
                   backgroundColor: getPostItColor(),
                 }}
@@ -361,7 +344,6 @@ function Draw() {
                 />
               </div>
 
-              {/* Drawing tools */}
               <div className="mt-4 space-y-3">
                 <div className="flex gap-2">
                   <button
@@ -410,8 +392,7 @@ function Draw() {
               </div>
             </div>
 
-            {/* Right side - Options */}
-            <div className="flex-1 bg-white shadow-lg rounded-2xl p-6 space-y-4">
+            <div className="flex-1 bg-white shadow-lg rounded-lg  p-6 space-y-4">
               <h1 className="text-3xl font-bold text-slate-900 mb-8 text-center">
                 Draw a Post-it
               </h1>
@@ -426,7 +407,7 @@ function Draw() {
                       value={size}
                       onChange={(e) => {
                         setSize(e.target.value);
-                        clearCanvas(); // Clear when changing size
+                        clearCanvas();
                       }}
                       className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 bg-white"
                     >

@@ -16,7 +16,6 @@ function Login() {
         { withCredentials: true },
       );
 
-      // redirect and reload client
       navigate("/dashboard");
       window.location.reload();
     },

@@ -14,6 +14,7 @@ import Dashboard from "./pages/Dashboard.jsx";
 import Operations from "./pages/Operations.jsx";
 import Add from "./pages/Add.jsx";
 import Draw from "./pages/Draw.jsx";
+import Checkout from "./components/Checkout.jsx";
 
 import ErrorBoundary from "./pages/ErrorBoundary.jsx";
 
@@ -42,6 +43,7 @@ function App() {
                   <Route path="/operations/add" element={<Add />} />
                   <Route path="/operations/draw" element={<Draw />} />
                   <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/checkout" element={<Checkout />} />
 
                   <Route path="*" element={<ErrorBoundary />} />
                 </Routes>

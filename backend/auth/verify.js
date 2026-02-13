@@ -10,13 +10,12 @@ export const verify = async (req, res) => {
     if (!token) {
       return res.status(401).json({ authenticated: false });
     }
-    // verify token
+
     const decoded = jwt.verify(token, JWT_SECRET);
     const userId = decoded.sub;
 
-    // query DB for latest user info
     const query = `
-      SELECT id, email, picture, given_name, family_name, role, created_at
+      SELECT id, email, picture, given_name, family_name, role, created_at, posts_made
       FROM users
       WHERE google_id = $1
     `;
@@ -28,15 +27,18 @@ export const verify = async (req, res) => {
     }
 
     const user = result.rows[0];
+
     return res.status(200).json({
       authenticated: true,
       user: {
         id: user.id,
         email: user.email,
-        name: `${user.given_name} ${user.family_name}`,
+        given_name: user.given_name,
+        family_name: user.family_name,
         picture: user.picture,
         role: user.role,
         created_at: user.created_at,
+        posts_made: user.posts_made,
       },
     });
   } catch (error) {

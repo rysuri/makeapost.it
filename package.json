@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@stripe/stripe-js": "^8.7.0",
     "simplify-js": "^1.2.4"
   }
 }

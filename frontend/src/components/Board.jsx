@@ -40,6 +40,7 @@ function Board() {
     try {
       const { data } = await axios.get("http://localhost:3000/data/posts");
       setPosts(data.posts);
+      console.log("Board loaded", data.posts.length, "posts");
     } catch (error) {
       console.error("Error fetching posts:", error);
       setError("Failed to load posts");
@@ -151,7 +152,6 @@ function Board() {
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-gradient-to-br from-gray-50 to-gray-200">
-      {/* Blur overlay with fade transition */}
       <div
         className="absolute inset-0 z-20 bg-white/10 transition-all duration-300 ease-in-out"
         style={{
@@ -162,7 +162,6 @@ function Board() {
         }}
       />
 
-      {/* Controls - slide in/out with transitions */}
       <div
         className="absolute top-4 right-4 z-10 flex flex-col gap-2 bg-white p-3 rounded-lg shadow-lg transition-all duration-100 ease-in-out"
         style={{

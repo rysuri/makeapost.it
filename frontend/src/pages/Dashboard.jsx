@@ -46,13 +46,17 @@ export default function Dashboard() {
       <div className="bg-white p-8 rounded-lg shadow-xl max-w-lg w-full animate-[slideUp_0.4s_ease-out]">
         <div className="space-y-6">
           <h1 className="text-2xl font-bold text-gray-800 animate-[fadeIn_0.5s_ease-out]">
-            Hey, {user.name}!
+            Hey,{" "}
+            {[user.given_name, user.family_name].filter(Boolean).join(" ") ||
+              "there"}
+            !
           </h1>
 
           <div className="flex gap-6 items-start animate-[fadeIn_0.6s_ease-out]">
             <img
-              src={user.picture}
-              alt={user.name}
+              src={user.picture || "/user-placeholder.png"}
+              alt={`${user.given_name} ${user.family_name}`}
+              onError={(e) => (e.target.src = "/user-placeholder.png")}
               className="w-24 h-24 rounded-full shadow-md flex-shrink-0"
             />
 
@@ -69,20 +73,16 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4">
             <div
               className="bg-blue-100 p-4 rounded-lg text-center animate-[popIn_0.4s_ease-out]"
               style={{ animationDelay: "0.2s", animationFillMode: "backwards" }}
             >
-              <p className="text-3xl font-bold text-gray-800">12</p>
+              <p className="text-3xl font-bold text-gray-800">
+                {user.posts_made ?? 0}
+              </p>
+
               <p className="text-sm text-gray-600 mt-1">Posts made</p>
-            </div>
-            <div
-              className="bg-yellow-100 p-4 rounded-lg text-center animate-[popIn_0.4s_ease-out]"
-              style={{ animationDelay: "0.3s", animationFillMode: "backwards" }}
-            >
-              <p className="text-3xl font-bold text-gray-800">45</p>
-              <p className="text-sm text-gray-600 mt-1">Clicks</p>
             </div>
           </div>
 

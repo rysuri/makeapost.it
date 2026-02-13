@@ -196,7 +196,7 @@ function Add() {
             </div>
 
             {/* Right side - Form */}
-            <div className="flex-1 bg-white shadow-lg rounded-2xl p-6 space-y-4">
+            <div className="flex-1 bg-white shadow-lg rounded-lg  p-6 space-y-4">
               <h1 className="text-3xl font-bold text-slate-900 mb-8 text-center">
                 Make a Post
               </h1>
