@@ -27,17 +27,23 @@ function createSessionToken(user) {
 
 export const googleAuth = async (req, res) => {
   try {
+    console.log("=== GOOGLE AUTH REQUEST ===");
+    console.log("Request origin:", req.headers.origin);
+
     const { tokens } = await oAuth2Client.getToken(req.body.code);
 
     const decoded = jwtDecode(tokens.id_token);
 
     const { sub: google_id, email, picture, given_name, family_name } = decoded;
 
+    console.log("User authenticated:", email);
+
     // check if user exists
     const check_query = "SELECT * FROM users WHERE google_id = $1";
     const existing_user = await dbClient.query(check_query, [google_id]);
 
     if (existing_user.rows.length === 0) {
+      console.log("Creating new user:", email);
       const insert_query = `
         INSERT INTO users (google_id, email, picture, given_name, family_name) 
         VALUES ($1, $2, $3, $4, $5)
@@ -50,6 +56,8 @@ export const googleAuth = async (req, res) => {
         given_name,
         family_name,
       ]);
+    } else {
+      console.log("Existing user found:", email);
     }
 
     const token = createSessionToken({
@@ -60,17 +68,24 @@ export const googleAuth = async (req, res) => {
       family_name,
     });
 
-    // prepare cookie package.
-    res.cookie("session", token, {
+    // CRITICAL: For cross-origin cookies (Vercel -> Railway)
+    const cookieOptions = {
       httpOnly: true,
-      sameSite: "lax",
-      secure: false,
-      maxAge: 3 * 24 * 60 * 60 * 1000,
-    });
+      secure: true, // MUST be true for sameSite=none
+      sameSite: "none", // MUST be 'none' for cross-origin
+      maxAge: 3 * 24 * 60 * 60 * 1000, // 3 days
+      path: "/",
+    };
+
+    console.log("Setting cookie with options:", cookieOptions);
+
+    res.cookie("session", token, cookieOptions);
+
+    console.log("✅ Cookie set successfully");
 
     return res.status(200).json({ success: true });
   } catch (error) {
-    console.error("Auth error:", error);
+    console.error("❌ Auth error:", error);
     res.status(500).json({ error: "Authentication failed" });
   }
 };
