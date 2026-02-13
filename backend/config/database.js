@@ -1,16 +1,22 @@
-const { Client } = require("pg");
+const { Pool } = require("pg");
 
-const dbClient = new Client({
+const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl:
-    process.env.NODE_ENV === "production"
-      ? { rejectUnauthorized: false }
-      : false,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+  max: 20, // Maximum number of connections
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
 });
 
-dbClient
-  .connect()
-  .then(() => console.log("Connected to PostgreSQL"))
-  .catch((err) => console.error("DB connection failed:", err));
+// Test connection on startup
+pool.on("connect", () => {
+  console.log("Connected to Supabase PostgreSQL");
+});
 
-module.exports = dbClient;
+pool.on("error", (err) => {
+  console.error("Unexpected database error:", err);
+});
+
+module.exports = pool;
