@@ -1,3 +1,8 @@
+import dbClient from "../config/database.js";
+import jwt from "jsonwebtoken";
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
 export const verify = async (req, res) => {
   try {
     console.log("=== VERIFY REQUEST ===");
