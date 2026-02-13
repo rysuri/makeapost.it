@@ -8,16 +8,25 @@ function Login() {
 
   const googleLogin = useGoogleLogin({
     flow: "auth-code",
-
     onSuccess: async ({ code }) => {
-      await axios.post(
-        `${import.meta.env.VITE_API_URL}/auth/google`,
-        { code },
-        { withCredentials: true },
-      );
-      console.log("Login response:", response);
-      navigate("/dashboard");
-      window.location.reload();
+      try {
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_URL}/auth/google`,
+          { code },
+          { withCredentials: true },
+        );
+
+        console.log("Login response:", response); // Add logging
+
+        navigate("/dashboard");
+        window.location.reload();
+      } catch (error) {
+        console.error("Login failed:", error.response || error);
+        // Show error to user
+      }
+    },
+    onError: (error) => {
+      console.error("Google login error:", error);
     },
   });
   useEffect(() => {
