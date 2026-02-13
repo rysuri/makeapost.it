@@ -11,7 +11,7 @@ function Login() {
 
     onSuccess: async ({ code }) => {
       await axios.post(
-        "http://localhost:3000/auth/google",
+        `${import.meta.env.VITE_API_URL}/data/google`,
         { code },
         { withCredentials: true },
       );

@@ -16,21 +16,17 @@ function PostIt({
   const canvasRef = useRef(null);
   const [showLinkWarning, setShowLinkWarning] = useState(false);
 
-  // Render drawing on canvas if drawing data exists
   useEffect(() => {
     if (!drawing || !canvasRef.current) return;
 
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
 
-    // Set canvas to the drawing's native resolution
     canvas.width = drawing.width || 200;
     canvas.height = drawing.height || 200;
 
-    // Clear canvas (transparent background)
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw all paths at native resolution (NO SCALING)
     if (drawing.paths && drawing.paths.length > 0) {
       drawing.paths.forEach((path) => {
         if (path.points.length < 2) return;
@@ -70,21 +66,18 @@ function PostIt({
     B: "bg-blue-200 shadow-blue-300/50",
   };
 
-  // Handle link icon click
   const handleLinkIconClick = (e) => {
-    e.stopPropagation(); // Prevent any parent click handlers
+    e.stopPropagation();
     setShowLinkWarning(true);
     if (onModalOpen) onModalOpen();
   };
 
-  // Handle confirm navigation
   const handleConfirmNavigation = () => {
     window.open(link, "_blank", "noopener,noreferrer");
     setShowLinkWarning(false);
     if (onModalClose) onModalClose();
   };
 
-  // Handle modal close
   const handleModalClose = () => {
     setShowLinkWarning(false);
     if (onModalClose) onModalClose();
@@ -107,10 +100,8 @@ function PostIt({
           fontFamily: "'Indie Flower', cursive, sans-serif",
         }}
       >
-        {/* Tape effect */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-4 bg-white/40 rounded-sm shadow-sm" />
 
-        {/* Link indicator */}
         {link && (
           <div
             onClick={handleLinkIconClick}
@@ -133,7 +124,6 @@ function PostIt({
           </div>
         )}
 
-        {/* Content area - fills entire post-it */}
         <div
           className={`w-full h-full flex items-center justify-center ${message ? "p-3" : ""}`}
         >
@@ -158,13 +148,11 @@ function PostIt({
           )}
         </div>
 
-        {/* Footer with timestamp - overlaid bottom left */}
         <div className="absolute bottom-2 left-2 text-xs text-gray-600 opacity-60 z-10 pointer-events-none">
           {new Date(createdAt).toLocaleDateString()}
         </div>
       </div>
 
-      {/* Link warning modal */}
       {link && (
         <LinkWarningModal
           isOpen={showLinkWarning}

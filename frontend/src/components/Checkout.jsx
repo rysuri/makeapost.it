@@ -1,7 +1,7 @@
 export default function Checkout() {
   async function handleCheckout() {
     const res = await fetch(
-      "http://localhost:3000/stripe/create-checkout-session",
+      `${import.meta.env.VITE_API_URL}/stripe/create-checkout-session`,
       {
         method: "POST",
       },

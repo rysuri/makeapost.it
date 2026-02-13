@@ -38,7 +38,9 @@ function Board() {
 
   async function fetchPosts() {
     try {
-      const { data } = await axios.get("http://localhost:3000/data/posts");
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_API_URL}/data/posts`,
+      );
       setPosts(data.posts);
       console.log("Board loaded", data.posts.length, "posts");
     } catch (error) {

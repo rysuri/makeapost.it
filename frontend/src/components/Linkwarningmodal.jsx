@@ -9,15 +9,12 @@ function LinkWarningModal({ isOpen, onClose, onConfirm, link }) {
       className="fixed inset-0 z-[9999] flex items-center justify-center p-4 animate-fadeIn"
       style={{ margin: 0 }}
     >
-      {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/70 backdrop-blur-sm"
         onClick={onClose}
       />
 
-      {/* Modal */}
       <div className="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full p-8 animate-scaleIn">
-        {/* Warning Icon */}
         <div className="flex justify-center mb-6">
           <div className="bg-yellow-100 rounded-full p-4">
             <svg
@@ -36,7 +33,6 @@ function LinkWarningModal({ isOpen, onClose, onConfirm, link }) {
           </div>
         </div>
 
-        {/* Content */}
         <div className="text-center mb-6">
           <h3 className="text-2xl font-bold text-gray-900 mb-3">
             You are leaving this site
@@ -46,7 +42,6 @@ function LinkWarningModal({ isOpen, onClose, onConfirm, link }) {
             the safety or content of external websites.
           </p>
 
-          {/* URL Display */}
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
             <p className="text-sm text-gray-500 mb-1">
               You will be redirected to:
@@ -59,7 +54,6 @@ function LinkWarningModal({ isOpen, onClose, onConfirm, link }) {
           </p>
         </div>
 
-        {/* Buttons */}
         <div className="flex gap-3">
           <button
             onClick={onClose}
@@ -101,7 +95,6 @@ function LinkWarningModal({ isOpen, onClose, onConfirm, link }) {
     </div>
   );
 
-  // Render modal at document.body level using portal
   return createPortal(modalContent, document.body);
 }
 

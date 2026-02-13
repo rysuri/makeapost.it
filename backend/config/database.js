@@ -5,12 +5,11 @@ const pool = new Pool({
   ssl: {
     rejectUnauthorized: false,
   },
-  max: 20, // Maximum number of connections
+  max: 20,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
 });
 
-// Test connection on startup
 pool.on("connect", () => {
   console.log("Connected to Supabase PostgreSQL");
 });

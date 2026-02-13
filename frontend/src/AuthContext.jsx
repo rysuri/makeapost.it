@@ -14,7 +14,7 @@ export function AuthProvider({ children }) {
   async function verify() {
     try {
       const { data } = await axios.post(
-        "http://localhost:3000/auth/verify",
+        `${import.meta.env.VITE_API_URL}/auth/verify`,
         {},
         { withCredentials: true },
       );
@@ -28,7 +28,7 @@ export function AuthProvider({ children }) {
   }
   async function logout() {
     await axios.post(
-      "http://localhost:3000/auth/logout",
+      `${import.meta.env.VITE_API_URL}/auth/logout`,
       {},
       { withCredentials: true },
     );

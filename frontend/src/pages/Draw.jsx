@@ -208,7 +208,7 @@ function Draw() {
   async function handlePost(x, y) {
     try {
       const { data } = await axios.post(
-        "http://localhost:3000/data/post",
+        `${import.meta.env.VITE_API_URL}/data/post`,
         {
           message: null,
           drawing: drawingData,

@@ -19,8 +19,6 @@ function Add() {
   const { screenToBoard, zoom, triggerRefresh, setIsBoardInteractive } =
     useBoard();
   const navigate = useNavigate();
-
-  // Set board to non-interactive on mount, restore on unmount
   useEffect(() => {
     setIsBoardInteractive(false);
     return () => {
@@ -31,7 +29,6 @@ function Add() {
   useEffect(() => {
     document.title = "Post-it · makeapost";
   }, []);
-  // Track mouse position when in placement mode
   useEffect(() => {
     if (!isPlacing) return;
 
@@ -45,11 +42,9 @@ function Add() {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [isPlacing, screenToBoard]);
 
-  // Handle click to place post-it
   useEffect(() => {
     if (!isPlacing) return;
 
-    // Small delay to prevent the button click from triggering placement
     const timer = setTimeout(() => {
       const handleClick = async (e) => {
         e.preventDefault();
@@ -66,12 +61,11 @@ function Add() {
       window.addEventListener("click", handleClick);
       window.addEventListener("keydown", handleEscape);
 
-      // Store cleanup function
       window._placementCleanup = () => {
         window.removeEventListener("click", handleClick);
         window.removeEventListener("keydown", handleEscape);
       };
-    }, 100); // 100ms delay
+    }, 0);
 
     return () => {
       clearTimeout(timer);
@@ -89,13 +83,13 @@ function Add() {
     }
     e.stopPropagation();
     setIsPlacing(true);
-    setIsBoardInteractive(true); // Make board interactive during placement
+    setIsBoardInteractive(true);
   }
 
   async function handlePost(x, y) {
     try {
       const { data } = await axios.post(
-        "http://localhost:3000/data/post",
+        `${import.meta.env.VITE_API_URL}/data/post`,
         {
           message: inputValue,
           link: link || null,
@@ -112,7 +106,7 @@ function Add() {
       setInputValue("");
       setLink("");
       setIsPlacing(false);
-      setIsBoardInteractive(false); // Block board again after placement
+      setIsBoardInteractive(false);
 
       triggerRefresh();
       navigate("/");
@@ -120,7 +114,7 @@ function Add() {
       console.error("Post error:", error.response?.data || error.message);
       alert("Failed to create post");
       setIsPlacing(false);
-      setIsBoardInteractive(false); // Block board again on error
+      setIsBoardInteractive(false);
     }
   }
 
@@ -135,7 +129,6 @@ function Add() {
 
   return (
     <>
-      {/* CSS for heartbeat animation */}
       <style>{`
         @keyframes heartbeat {
           0%, 100% {
@@ -147,7 +140,6 @@ function Add() {
         }
       `}</style>
 
-      {/* Placement mode preview */}
       {isPlacing && (
         <div
           className="fixed pointer-events-none z-50"
@@ -179,11 +171,9 @@ function Add() {
         </div>
       )}
 
-      {/* Form with preview - hidden during placement */}
       {!isPlacing && (
         <div className="p-6 max-w-3xl mx-auto">
           <div className="flex gap-8 items-start">
-            {/* Left side - Preview */}
             <div className="flex-shrink-0">
               <PostIt
                 message={inputValue}
@@ -195,7 +185,6 @@ function Add() {
               />
             </div>
 
-            {/* Right side - Form */}
             <div className="flex-1 bg-white shadow-lg rounded-lg  p-6 space-y-4">
               <h1 className="text-3xl font-bold text-slate-900 mb-8 text-center">
                 Make a Post
