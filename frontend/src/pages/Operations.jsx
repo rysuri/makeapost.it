@@ -6,7 +6,7 @@ function Operations() {
     document.title = "Operations · makeapost";
   }, []);
   return (
-    <div className="flex gap-8 justify-center">
+    <div className="flex flex-col sm:flex-row gap-8 justify-center items-center">
       <Link
         to="/operations/draw"
         className="w-64 h-64 bg-blue-200 shadow-lg shadow-blue-300/50 p-4 rounded-sm transform transition-all duration-150 hover:scale-110 hover:rotate-2 cursor-pointer flex flex-col relative select-none animate-[popIn_0.15s_ease-out]"

@@ -27,7 +27,7 @@ function App() {
         </div>
 
         <div className="relative z-10 flex flex-col min-h-screen pointer-events-none">
-          <div className="sticky top-0 z-50 p-10 max-w-7xl mx-auto w-full">
+          <div className="sticky top-0 z-50 p-0 md:p-10 max-w-7xl mx-auto w-full">
             <div className="pointer-events-auto select-none">
               <NavBar />
             </div>
@@ -51,7 +51,7 @@ function App() {
             </div>
           </main>
 
-          <div className="mt-auto p-10 max-w-7xl mx-auto w-full">
+          <div className="mt-auto p-0 md:p-10 max-w-7xl mx-auto w-full">
             <div className="pointer-events-auto select-none">
               <Footer />
             </div>

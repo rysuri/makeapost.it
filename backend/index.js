@@ -15,8 +15,23 @@ const allowedOrigins = (process.env.CLIENT_URL || "http://localhost:5173")
   .split(",")
   .map((url) => url.trim().replace(/\/$/, ""));
 
+// Add localhost variants if not in production
+if (process.env.NODE_ENV !== "production") {
+  const localhostOrigins = [
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "http://127.0.0.1:5173",
+    "http://127.0.0.1:3000",
+  ];
+
+  localhostOrigins.forEach((origin) => {
+    if (!allowedOrigins.includes(origin)) {
+      allowedOrigins.push(origin);
+    }
+  });
+}
+
 console.log("Allowed CORS origins:", allowedOrigins);
-console.log("CLIENT_URL from env:", process.env.CLIENT_URL);
 
 app.use(
   cors({

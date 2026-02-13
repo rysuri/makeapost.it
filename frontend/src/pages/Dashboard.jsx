@@ -75,7 +75,7 @@ export default function Dashboard() {
 
           <div className="grid grid-cols-1 gap-4">
             <div
-              className="bg-blue-100 p-4 rounded-lg text-center animate-[popIn_0.4s_ease-out]"
+              className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-center animate-[popIn_0.4s_ease-out]"
               style={{ animationDelay: "0.2s", animationFillMode: "backwards" }}
             >
               <p className="text-3xl font-bold text-gray-800">
