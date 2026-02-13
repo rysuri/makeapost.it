@@ -15,7 +15,7 @@ function Login() {
         { code },
         { withCredentials: true },
       );
-
+      console.log("Login response:", response);
       navigate("/dashboard");
       window.location.reload();
     },

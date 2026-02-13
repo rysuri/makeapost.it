@@ -28,6 +28,8 @@ function createSessionToken(user) {
 export const googleAuth = async (req, res) => {
   try {
     console.log("=== GOOGLE AUTH REQUEST ===");
+    console.log("Code received:", req.body.code ? "YES" : "NO");
+    console.log("Request body:", req.body);
     console.log("Request origin:", req.headers.origin);
 
     const { tokens } = await oAuth2Client.getToken(req.body.code);
